@@ -33,12 +33,16 @@
     overflow-y: scroll;
 }
 .message {
-    align-self: flex-end;
+    align-self: flex-start;
     width: 87%;
     padding: 10px;
-    background-color: #96e6df;
+    background-color: #40e685;
     height: fit-content;
     border-radius: 10px;
+}
+.local-user {
+    align-self: flex-end;
+    background-color: #96e6df;
 }
 .chat-form{
     display: flex;

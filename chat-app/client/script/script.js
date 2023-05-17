@@ -8,9 +8,12 @@ const messageInput = document.getElementById("message-input");
 const roomIput = document.getElementById("room-input");
 
 const socket = io("http://localhost:3000");
-const userSocket = io("http://localhost:3000/user", {auth: {token: "test"}})
 socket.on("connect", () => {
-    displayMessage(`You are connected with id: ${socket.id}`)
+    displayMessage(`You are connected with id: ${socket.id}`);
+});
+socket.on("get-users", (users) => {
+    const getCurrUser = users.find(user => user.socketId === socket.id);
+    console.log(users, getCurrUser)
 });
 
 socket.on("receive-message", (message) => {
@@ -24,9 +27,9 @@ form.addEventListener("submit", (e) => {
     
     if(message === "") return;
     
-    displayMessage(message);
+    displayMessage(message, true);
     socket.emit("send-message", message, room);
-
+    
     messageInput.value = "";
 });
 
@@ -35,17 +38,24 @@ joinRoomButton.addEventListener("click", () => {
     socket.emit("join-room", room, message => {
         displayMessage(message)
     });
-
-
+    
+    
 });
 
-const displayMessage = (message) => {
+const displayMessage = (message, isLocalUser) => {
+    const localUser = isLocalUser ? "local-user" : "";
     const div = document.createElement("div");
     div.textContent = message;
-    div.classList.add(["message"])
+    if(localUser) {
+        div.classList.add('message', localUser)
+    } else {
+        div.classList.add('message');
+    } 
     messageContainer.append(div);
     scrollToBottom();
 }
 const scrollToBottom = () => {
     messageContainer.scrollTop = messageContainer.scrollHeight;
 }
+
+// const userSocket = io("http://localhost:3000/user", {auth: {token: "test"}})
